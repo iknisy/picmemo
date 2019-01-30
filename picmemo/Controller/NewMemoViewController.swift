@@ -23,17 +23,22 @@ class NewMemoViewController: UITableViewController, UIImagePickerControllerDeleg
             let memoDetail = MemoDetail(context: appDelegate.persistentContainer.viewContext)
             memoDetail.time = timeTextFeild.text
             memoDetail.describe = describTextView.text
+            do{
+                memoDetail.textColor = try NSKeyedArchiver.archivedData(withRootObject: UIColor.white, requiringSecureCoding: false)
+            }catch{
+                print(error)
+            }
             if let image = photoImageView.image {
                 memoDetail.image = image.pngData()
             }
             appDelegate.saveContext()
+            print("CoreData save")
         }
         dismiss(animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 

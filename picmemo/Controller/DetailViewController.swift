@@ -11,23 +11,101 @@ import UIKit
 class DetailViewController: UIViewController, CAAnimationDelegate {
     @IBOutlet weak var detailImageView: UIImageView!
     @IBOutlet weak var detailLabel: UILabel!
+    @IBOutlet weak var detailTextView: UITextView!
     @IBOutlet weak var detailView: UIView!
+    @IBOutlet var colorTextButton: [UIButton]!
+    @IBAction func colorText(_ sender: UIButton){
+        switch sender.currentTitle {
+        case "RED":
+            detailTextView.textColor = UIColor.red
+        case "GREEN":
+            detailTextView.textColor = UIColor.green
+        case "BLUE":
+            detailTextView.textColor = UIColor.blue
+        case "BLACK":
+            detailTextView.textColor = UIColor.black
+        case "WHITE":
+            detailTextView.textColor = UIColor.white
+        default:
+            break
+        }
+    }
+    @IBOutlet weak var editButton: UIButton!
+    @IBAction func editDescript(){
+        if editFlag{
+            editFlag = false
+//            隱藏上色按鈕
+            for colorButton in colorTextButton {
+                colorButton.isHidden = true
+            }
+//            切換成Lable
+            detailLabel.isHidden = false
+            detailLabel.text = detailTextView.text
+            detailLabel.textColor = detailTextView.textColor
+            detailTextView.transform = CGAffineTransform(translationX: UIScreen.main.bounds.width + 100, y: 0)
+//            儲存圖示切換成編輯
+            editButton.setImage(UIImage(named: "pen"), for: .normal)
+//            恢復手勢動作
+            for tempGesture in detailView.gestureRecognizers! {
+                tempGesture.isEnabled = true
+            }
+//            儲存註解
+            memoDetails[index].describe = detailTextView.text
+            var textColor: UIColor
+            if detailTextView.textColor != nil {
+                textColor = detailTextView.textColor!
+            }else{
+                textColor = UIColor.white
+            }
+            do{
+                memoDetails[index].textColor = try NSKeyedArchiver.archivedData(withRootObject: textColor, requiringSecureCoding: false)
+            }catch{
+                print(error)
+            }
+            
+        }else{
+            editFlag = true
+//            顯示上色按鈕
+            for colorButton in colorTextButton {
+                colorButton.isHidden = false
+            }
+//            切換成TextView
+            detailLabel.isHidden = true
+            detailTextView.transform = .identity
+//            編輯圖示切換成儲存
+            editButton.setImage(UIImage(named: "save"), for: .normal)
+//            暫停手勢動作
+            for tempGesture in detailView.gestureRecognizers! {
+                tempGesture.isEnabled = false
+            }
+        }
+    }
     
     var memoDetails: [MemoDetail]!
     var index: Int!
+    var editFlag = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-//        讀取圖檔
+//        隱藏編輯上色按鈕
+        for colorbutton in colorTextButton {
+            colorbutton.isHidden = true
+        }
+//        讀取CoreData
         if memoDetails != nil && index != nil {
             detailImageView.image = UIImage(data: memoDetails[index].image!)
-            if memoDetails[index].describe != nil {
-                detailLabel.text = memoDetails[index].describe
-            }else{
-                detailLabel.text = ""
+            detailLabel.text = memoDetails[index].describe
+            detailTextView.text = memoDetails[index].describe
+            do{
+                detailTextView.textColor = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(memoDetails[index].textColor!) as? UIColor
+                detailLabel.textColor = detailTextView.textColor
+            }catch{
+                print(error)
             }
         }
+//        隱藏TextView
+        detailTextView.transform = CGAffineTransform(translationX: UIScreen.main.bounds.width + 100, y: 0)
 //        監控左右滑動作
         let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(DetailViewController.viewSwipeToLeft(gesture:)))
         swipeLeft.direction = .left
@@ -35,6 +113,12 @@ class DetailViewController: UIViewController, CAAnimationDelegate {
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(DetailViewController.viewSwipeToRight(_:)))
         swipeRight.direction = .right
         detailView.addGestureRecognizer(swipeRight)
+//        監控單擊動作
+        let singleTouch = UITapGestureRecognizer(target: self, action: #selector(DetailViewController.lableHiddenSwitch(_:)))
+        singleTouch.numberOfTapsRequired = 1
+        singleTouch.numberOfTouchesRequired = 1
+        detailView.addGestureRecognizer(singleTouch)
+        
         detailView.isUserInteractionEnabled = true
     }
     
@@ -44,10 +128,13 @@ class DetailViewController: UIViewController, CAAnimationDelegate {
             index += 1
             detailImageView.leftToRightAnimation()
             detailImageView.image = UIImage(data: memoDetails[index].image!)
-            if memoDetails[index].describe != nil {
-                detailLabel.text = memoDetails[index].describe
-            }else{
-                detailLabel.text = ""
+            detailTextView.text = memoDetails[index].describe
+            detailLabel.text = detailTextView.text
+            do{
+                detailTextView.textColor = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(memoDetails[index].textColor!) as? UIColor
+                detailLabel.textColor = detailTextView.textColor
+            }catch{
+                print(error)
             }
         }
     }
@@ -56,10 +143,13 @@ class DetailViewController: UIViewController, CAAnimationDelegate {
         if index != nil && index > 0 {
             index -= 1
             detailImageView.image = UIImage(data: memoDetails[index].image!)
-            if memoDetails[index].describe != nil {
-                detailLabel.text = memoDetails[index].describe
-            }else{
-                detailLabel.text = ""
+            detailTextView.text = memoDetails[index].describe
+            detailLabel.text = detailTextView.text
+            do{
+                detailTextView.textColor = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(memoDetails[index].textColor!) as? UIColor
+                detailLabel.textColor = detailTextView.textColor
+            }catch{
+                print(error)
             }
 //            圖片切換動畫
             let animation = CATransition()
@@ -70,6 +160,11 @@ class DetailViewController: UIViewController, CAAnimationDelegate {
             animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
             self.detailView.layer.add(animation, forKey: "rightToLeftTransition")
         }
+    }
+    @objc func lableHiddenSwitch(_ gesture: UIGestureRecognizer){
+//        單擊螢幕切換隱藏或顯示註解
+        detailLabel.isHidden = !detailLabel.isHidden
+        editButton.isHidden = detailLabel.isHidden
     }
     
     override func didReceiveMemoryWarning() {

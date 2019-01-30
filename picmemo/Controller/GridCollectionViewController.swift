@@ -9,8 +9,6 @@
 import UIKit
 import CoreData
 
-private let reuseIdentifier = "GridCell"
-
 class GridCollectionViewController: UICollectionViewController, NSFetchedResultsControllerDelegate {
     @IBOutlet weak var delButton: UIButton!
     @IBAction func deleteButton(){
@@ -23,6 +21,7 @@ class GridCollectionViewController: UICollectionViewController, NSFetchedResults
                         let context = appDelegate.persistentContainer.viewContext
                         context.delete(delObject)
                         appDelegate.saveContext()
+                        print("CoreData save")
                     }
                 }
             }
@@ -87,6 +86,7 @@ class GridCollectionViewController: UICollectionViewController, NSFetchedResults
     }
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         let bo: BlockOperation
+        print("CoreData woking")
         switch type {
         case .insert:
             print("CoreData insert")
@@ -111,6 +111,11 @@ class GridCollectionViewController: UICollectionViewController, NSFetchedResults
             guard let index = indexPath else {return}
             bo = BlockOperation{
                 self.collectionView.reloadItems(at: [index])
+//                儲存變更
+                if let appDelegate = (UIApplication.shared.delegate as? AppDelegate){
+                    appDelegate.saveContext()
+                    print("CoreData save")
+                }
             }
 //        default:
 //            break
@@ -121,7 +126,7 @@ class GridCollectionViewController: UICollectionViewController, NSFetchedResults
         collectionView.performBatchUpdates({
 //            執行CoreData動作
             self.blockoprators.forEach{ $0.start() }
-//            重要!!重新讀取修改後的CoreData項目
+//            重新讀取修改後的CoreData項目
             if let fetchedObjects = controller.fetchedObjects {
                 memoDetails = fetchedObjects as! [MemoDetail]
             }
@@ -154,7 +159,7 @@ class GridCollectionViewController: UICollectionViewController, NSFetchedResults
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! GridCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GridCell", for: indexPath) as! GridCollectionViewCell
         // Configure the cell
         if let memoImage = memoDetails[indexPath.row].image {
             cell.gridImageView.image = UIImage(data: memoImage)
