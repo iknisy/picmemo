@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5413D097223A15A300465A86 /* picmemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5413D095223A15A300465A86 /* picmemo.xcdatamodeld */; };
+		5414310A222D191300ADE3D7 /* NewAddNotify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54143109222D191300ADE3D7 /* NewAddNotify.swift */; };
 		5415CC3221E843BB0013D229 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5415CC3121E843BB0013D229 /* DetailViewController.swift */; };
 		5419DDCF21CA17F800DE02AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5419DDCE21CA17F800DE02AE /* AppDelegate.swift */; };
 		5419DDD421CA17F800DE02AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5419DDD221CA17F800DE02AE /* Main.storyboard */; };
-		5419DDD721CA17F800DE02AE /* picmemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5419DDD521CA17F800DE02AE /* picmemo.xcdatamodeld */; };
 		5419DDD921CA17F900DE02AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5419DDD821CA17F900DE02AE /* Assets.xcassets */; };
 		5419DDDC21CA17F900DE02AE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5419DDDA21CA17F900DE02AE /* LaunchScreen.storyboard */; };
 		5419DDE821CA1B8900DE02AE /* GridCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5419DDE721CA1B8900DE02AE /* GridCollectionViewCell.swift */; };
@@ -19,11 +20,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5413D096223A15A300465A86 /* picmemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = picmemo.xcdatamodel; sourceTree = "<group>"; };
+		54143109222D191300ADE3D7 /* NewAddNotify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAddNotify.swift; sourceTree = "<group>"; };
 		5415CC3121E843BB0013D229 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		5419DDCB21CA17F800DE02AE /* picmemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = picmemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5419DDCE21CA17F800DE02AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5419DDD321CA17F800DE02AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		5419DDD621CA17F800DE02AE /* picmemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = picmemo.xcdatamodel; sourceTree = "<group>"; };
 		5419DDD821CA17F900DE02AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5419DDDB21CA17F900DE02AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5419DDDD21CA17F900DE02AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -67,9 +69,9 @@
 				5419DDE421CA182E00DE02AE /* Controller */,
 				5419DDE321CA180D00DE02AE /* StoryBoard */,
 				5419DDCE21CA17F800DE02AE /* AppDelegate.swift */,
+				5413D095223A15A300465A86 /* picmemo.xcdatamodeld */,
 				5419DDD821CA17F900DE02AE /* Assets.xcassets */,
 				5419DDDD21CA17F900DE02AE /* Info.plist */,
-				5419DDD521CA17F800DE02AE /* picmemo.xcdatamodeld */,
 			);
 			path = picmemo;
 			sourceTree = "<group>";
@@ -104,6 +106,7 @@
 		5419DDE621CA189400DE02AE /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				54143109222D191300ADE3D7 /* NewAddNotify.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -140,6 +143,11 @@
 				TargetAttributes = {
 					5419DDCA21CA17F800DE02AE = {
 						CreatedOnToolsVersion = 10.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -179,12 +187,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5413D097223A15A300465A86 /* picmemo.xcdatamodeld in Sources */,
 				5419DDE821CA1B8900DE02AE /* GridCollectionViewCell.swift in Sources */,
+				5414310A222D191300ADE3D7 /* NewAddNotify.swift in Sources */,
 				5419DDCF21CA17F800DE02AE /* AppDelegate.swift in Sources */,
 				5419DDEC21CA21D600DE02AE /* GridCollectionViewController.swift in Sources */,
 				5415CC3221E843BB0013D229 /* DetailViewController.swift in Sources */,
 				5419DDEE21CA389C00DE02AE /* NewMemoViewController.swift in Sources */,
-				5419DDD721CA17F800DE02AE /* picmemo.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,12 +393,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		5419DDD521CA17F800DE02AE /* picmemo.xcdatamodeld */ = {
+		5413D095223A15A300465A86 /* picmemo.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				5419DDD621CA17F800DE02AE /* picmemo.xcdatamodel */,
+				5413D096223A15A300465A86 /* picmemo.xcdatamodel */,
 			);
-			currentVersion = 5419DDD621CA17F800DE02AE /* picmemo.xcdatamodel */;
+			currentVersion = 5413D096223A15A300465A86 /* picmemo.xcdatamodel */;
 			path = picmemo.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

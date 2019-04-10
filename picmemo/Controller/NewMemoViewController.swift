@@ -15,8 +15,50 @@ class NewMemoViewController: UITableViewController, UIImagePickerControllerDeleg
     @IBAction func backView(){
         dismiss(animated: true, completion: nil)
     }
-    @IBOutlet var photoImageView: UIImageView!
-    @IBOutlet var timeTextFeild: UITextField!
+    @IBOutlet var photoImageView: UIImageView!{
+        didSet{
+            let app = UIApplication.shared.delegate as! AppDelegate
+//            AppDelegate的localID有數值即代表使用者點擊Notification
+            if let localID = app.localID {
+//                從localIdentifier獲得該圖的PHAsset
+                if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localID], options: nil).firstObject{
+                    let imageManager = PHImageManager.default()
+//                    自動載入圖片的動作
+                    imageManager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: nil, resultHandler: { (image, info) in
+                        if let image = image {
+                            self.photoImageView.image = image
+                            self.photoImageView.contentMode = .scaleAspectFit
+                            self.photoImageView.clipsToBounds = true
+//                            設定圖片邊界
+                            let leadConstraint = NSLayoutConstraint(item: self.photoImageView, attribute: .leading, relatedBy: .equal, toItem: self.photoImageView.superview, attribute: .leading, multiplier: 1, constant: 0)
+                            leadConstraint.isActive = true
+                            let trailConstraint = NSLayoutConstraint(item: self.photoImageView, attribute: .trailing, relatedBy: .equal, toItem: self.photoImageView.superview, attribute: .trailing, multiplier: 1, constant: 0)
+                            trailConstraint.isActive = true
+                            let topConstraint = NSLayoutConstraint(item: self.photoImageView, attribute: .top, relatedBy: .equal, toItem: self.photoImageView.superview, attribute: .top, multiplier: 1, constant: 0)
+                            topConstraint.isActive = true
+                            let bottomConstraint = NSLayoutConstraint(item: self.photoImageView, attribute: .bottom, relatedBy: .equal, toItem: self.photoImageView.superview, attribute: .bottom, multiplier: 1, constant: 0)
+                            bottomConstraint.isActive = true
+                        }
+                    })
+//                    獲得圖片的建立日期，並存入dateString供timeTextFeild使用
+                    let date = asset.creationDate
+                    let format = DateFormatter()
+                    format.dateFormat = "YYYY / MM / dd, HH:mm:ss"
+                    self.dateString = format.string(from: date!)
+                }
+//                清除AppDelegate的localID變數以防止下次再度載入
+                app.localID = nil
+            }
+        }
+    }
+    @IBOutlet var timeTextFeild: UITextField!{
+        didSet{
+            if dateString != nil {
+                timeTextFeild.text = dateString
+                dateString = nil
+            }
+        }
+    }
     @IBOutlet var describTextView: UITextView!
     @IBAction func saveButtom(){
         if let appDelegate = (UIApplication.shared.delegate as? AppDelegate){
@@ -36,6 +78,8 @@ class NewMemoViewController: UITableViewController, UIImagePickerControllerDeleg
         }
         dismiss(animated: true, completion: nil)
     }
+//    供timeTextFeild didSet使用
+    var dateString:String?
     
     override func viewDidLoad() {
         super.viewDidLoad()

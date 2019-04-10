@@ -8,18 +8,32 @@
 
 import UIKit
 import CoreData
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
-
+    var localID: String?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        //        設定delegate以實作userNotificationCenter(_:didRecive:withCompletionHandler:)
+        UNUserNotificationCenter.current().delegate = self
         return true
     }
-
+//    背景檢查時的執行動作
+    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        let newAdd = NewAddNotify()
+        if newAdd.photoChangedNotify() {
+            print("newData")
+            completionHandler(.newData)
+        }else{
+            print("noData")
+            completionHandler(.noData)
+        }
+    }
+    
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
@@ -28,6 +42,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+//        設定背景檢查作業間隔3600s
+        UIApplication.shared.setMinimumBackgroundFetchInterval(3600)
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -87,6 +103,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
+    }
+//    點擊Notification後的執行動作
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+//        獲得Notification中附帶的資訊localIdentifier
+        localID = response.notification.request.content.userInfo["localIdentifier"] as? String
+//        呼叫新增Memo的func
+        if let rootViewController = window?.rootViewController as? UINavigationController {
+            if let viewController = rootViewController.viewControllers.first as? GridCollectionViewController {
+                viewController.newMemo()
+            }
+        }
+
+        completionHandler()
     }
 
 }
